@@ -1,0 +1,10 @@
+Options -Indexes
+
+# Presmeruj /api/* na backend/
+RewriteEngine On
+RewriteRule ^api/(.*)$ backend/$1 [L]
+
+# SPA fallback — všetko ostatné na index.html (ak nasadzuješ frontend do rootu)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(?!api/).*$ /index.html [L]
