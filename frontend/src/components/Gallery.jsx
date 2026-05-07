@@ -273,11 +273,14 @@ function FilterBtn({ active, onClick, children }) {
   )
 }
 
+const PAGE_SIZE = 20
+
 // ── Hlavná sekcia ─────────────────────────────────────────────────────────────
 export default function Gallery() {
-  const [modalAlbum, setModalAlbum] = useState(null)
-  const [sort, setSort]             = useState('newest')
-  const [year, setYear]             = useState('all')
+  const [modalAlbum, setModalAlbum]   = useState(null)
+  const [sort, setSort]               = useState('newest')
+  const [year, setYear]               = useState('all')
+  const [visibleCount, setVisible]    = useState(PAGE_SIZE)
 
   const years = useMemo(() => {
     const unique = [...new Set(ALBUMS.map(a => a.sortDate.slice(0, 4)))]
@@ -285,6 +288,7 @@ export default function Gallery() {
   }, [])
 
   const filtered = useMemo(() => {
+    setVisible(PAGE_SIZE)
     return [...ALBUMS]
       .filter(a => year === 'all' || a.sortDate.startsWith(year))
       .sort((a, b) => {
@@ -292,6 +296,9 @@ export default function Gallery() {
         return sort === 'newest' ? -cmp : cmp
       })
   }, [sort, year])
+
+  const visible  = filtered.slice(0, visibleCount)
+  const hasMore  = visibleCount < filtered.length
 
   return (
     <section id="galeria" className="py-16 md:py-28 px-4 sm:px-6 bg-parchment border-t border-ink/10">
@@ -355,10 +362,10 @@ export default function Gallery() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
         >
-          {filtered.map((album) => (
+          {visible.map((album) => (
             <AlbumCard key={album.title} album={album} onOpenPrivate={setModalAlbum} />
           ))}
         </motion.div>
@@ -367,6 +374,25 @@ export default function Gallery() {
           <p className="font-body text-ink-soft text-sm text-center py-16">
             Žiadne albumy pre vybraný rok.
           </p>
+        )}
+
+        {/* Zobraziť viac */}
+        {hasMore && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center gap-3 mt-10"
+          >
+            <button
+              onClick={() => setVisible(v => v + PAGE_SIZE)}
+              className="btn-primary text-sm"
+            >
+              Zobraziť viac ({filtered.length - visibleCount} zostáva)
+            </button>
+            <p className="font-body text-[10px] text-ink-soft/50">
+              {visibleCount} z {filtered.length} albumov
+            </p>
+          </motion.div>
         )}
       </div>
 
