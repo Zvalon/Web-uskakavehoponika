@@ -84,13 +84,14 @@ const SORT_OPTIONS = [
 
 function LockIcon() {
   return (
-    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
         d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
     </svg>
   )
 }
 
+// ── Password modal ─────────────────────────────────────────────────────────────
 function PasswordModal({ album, onClose }) {
   const [value, setValue]   = useState('')
   const [wrong, setWrong]   = useState(false)
@@ -148,7 +149,6 @@ function PasswordModal({ album, onClose }) {
               placeholder-ink/30 bg-parchment outline-none transition-colors duration-200
               ${wrong ? 'border-red-400' : 'border-ink/20 focus:border-ink'}`}
           />
-
           <AnimatePresence>
             {wrong && (
               <motion.p
@@ -161,7 +161,6 @@ function PasswordModal({ album, onClose }) {
               </motion.p>
             )}
           </AnimatePresence>
-
           <div className="flex gap-3 pt-1">
             <button
               type="button"
@@ -181,53 +180,106 @@ function PasswordModal({ album, onClose }) {
   )
 }
 
-const cardVariants = {
-  hidden:  { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+// ── Riadok zoznamu ─────────────────────────────────────────────────────────────
+const rowVariants = {
+  hidden:  { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } },
 }
 
-function AlbumCard({ album, onOpenPrivate }) {
+function AlbumRow({ album, isActive, onMouseEnter, onMouseLeave, onOpenPrivate }) {
   const handleClick = () => {
-    if (album.private) {
-      onOpenPrivate(album)
-    } else {
-      window.open(album.url, '_blank', 'noopener,noreferrer')
-    }
+    if (album.private) onOpenPrivate(album)
+    else window.open(album.url, '_blank', 'noopener,noreferrer')
   }
 
   return (
     <motion.button
-      variants={cardVariants}
+      variants={rowVariants}
       onClick={handleClick}
-      className="group relative overflow-hidden rounded-xl aspect-[4/3] w-full text-left
-                 shadow-[2px_2px_0_rgba(31,58,46,0.08)] hover:shadow-[4px_4px_0_rgba(31,58,46,0.15)]
-                 transition-shadow duration-300 cursor-pointer"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className={`group w-full flex items-center gap-4 px-4 py-3.5 border-b border-ink/8
+                  text-left cursor-pointer transition-colors duration-150
+                  ${isActive ? 'bg-ink/[0.035]' : 'hover:bg-ink/[0.035]'}`}
     >
-      <div
-        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
-        style={{ backgroundImage: album.image ? `url(${album.image})` : 'none', backgroundColor: '#2a1f10' }}
-      />
-
-      <div className="absolute inset-0 bg-gradient-to-t from-dark-wood/85 via-dark-wood/20 to-transparent" />
-
-      {album.private && (
-        <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-dark-wood/70 backdrop-blur-sm
-                        text-honey text-[10px] font-body tracking-widest uppercase px-2.5 py-1 rounded-full">
-          <LockIcon />
-          <span>Súkromné</span>
-        </div>
-      )}
-
-      <div className="absolute bottom-0 left-0 right-0 p-4">
-        <p className="font-display text-base text-parchment leading-tight">{album.title}</p>
-        <p className="font-body text-[11px] text-parchment/50 mt-0.5">{album.date}</p>
+      {/* Miniatúra — len na mobile */}
+      <div className="lg:hidden w-11 h-11 rounded-lg flex-shrink-0 overflow-hidden bg-dark-wood/15">
+        {album.image && (
+          <div className="w-full h-full bg-cover bg-center"
+               style={{ backgroundImage: `url(${album.image})` }} />
+        )}
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-honey scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+      {/* Názov + dátum */}
+      <div className="flex-1 min-w-0">
+        <p className={`font-display text-base leading-tight truncate transition-colors duration-150
+                       ${isActive ? 'text-honey-deep' : 'text-ink group-hover:text-honey-deep'}`}>
+          {album.title}
+        </p>
+        <p className="font-body text-[11px] text-ink-soft/60 mt-0.5">{album.date}</p>
+      </div>
+
+      {/* Zámok + šípka */}
+      <div className="flex items-center gap-2.5 flex-shrink-0">
+        {album.private && (
+          <span className="text-ink-soft/40">
+            <LockIcon />
+          </span>
+        )}
+        <span className={`font-body text-sm transition-all duration-200
+                          ${isActive ? 'translate-x-1 text-honey-deep' : 'text-ink-soft/30 group-hover:translate-x-1 group-hover:text-honey-deep'}`}>
+          →
+        </span>
+      </div>
     </motion.button>
   )
 }
 
+// ── Preview panel (desktop) ────────────────────────────────────────────────────
+function PreviewPanel({ album }) {
+  return (
+    <div className="sticky top-24 rounded-2xl overflow-hidden bg-dark-wood shadow-2xl"
+         style={{ aspectRatio: '4/3' }}>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={album ? album.url : 'empty'}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+          className="absolute inset-0"
+        >
+          {album?.image && (
+            <div className="absolute inset-0 bg-cover bg-center"
+                 style={{ backgroundImage: `url(${album.image})` }} />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-dark-wood/90 via-dark-wood/10 to-transparent" />
+
+          {album ? (
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              {album.private && (
+                <span className="inline-flex items-center gap-1.5 font-body text-[10px] tracking-widest
+                                 uppercase text-honey mb-2">
+                  <LockIcon /> Súkromné
+                </span>
+              )}
+              <p className="font-display text-xl text-parchment leading-tight">{album.title}</p>
+              <p className="font-body text-sm text-parchment/50 mt-1">{album.date}</p>
+            </div>
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="font-body text-xs tracking-[0.2em] uppercase text-parchment/20">
+                Prejdi myšou nad album
+              </p>
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  )
+}
+
+// ── Filter tlačidlo ────────────────────────────────────────────────────────────
 function FilterBtn({ active, onClick, children }) {
   return (
     <button
@@ -243,10 +295,17 @@ function FilterBtn({ active, onClick, children }) {
   )
 }
 
+// ── Hlavná sekcia ─────────────────────────────────────────────────────────────
+const headVariants = {
+  hidden:  { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+}
+
 export default function Gallery() {
-  const [modalAlbum, setModalAlbum] = useState(null)
-  const [sort, setSort]             = useState('newest')
-  const [year, setYear]             = useState('all')
+  const [modalAlbum, setModalAlbum]   = useState(null)
+  const [hoveredAlbum, setHovered]    = useState(null)
+  const [sort, setSort]               = useState('newest')
+  const [year, setYear]               = useState('all')
 
   const years = useMemo(() => {
     const unique = [...new Set(ALBUMS.map(a => a.sortDate.slice(0, 4)))]
@@ -266,6 +325,7 @@ export default function Gallery() {
     <section id="galeria" className="py-16 md:py-28 px-4 sm:px-6 bg-parchment border-t border-ink/10">
       <div className="max-w-6xl mx-auto">
 
+        {/* Nadpis */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -274,21 +334,22 @@ export default function Gallery() {
           className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10"
         >
           <div>
-            <motion.p variants={cardVariants} className="section-eyebrow">━━ Fotky</motion.p>
-            <motion.h2 variants={cardVariants} className="font-display text-4xl sm:text-5xl md:text-6xl text-ink leading-none">
+            <motion.p variants={headVariants} className="section-eyebrow">━━ Fotky</motion.p>
+            <motion.h2 variants={headVariants} className="font-display text-4xl sm:text-5xl md:text-6xl text-ink leading-none">
               Naša <em className="text-honey-deep not-italic">galéria</em>
             </motion.h2>
           </div>
-          <motion.p variants={cardVariants} className="max-w-xs font-body text-ink-soft text-sm">
+          <motion.p variants={headVariants} className="max-w-xs font-body text-ink-soft text-sm">
             Fotky z našich spoločných stretnutí, výletov a chát.
           </motion.p>
         </motion.div>
 
+        {/* Filtre */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-wrap items-center gap-2 mb-8"
+          className="flex flex-wrap items-center gap-2 mb-6"
         >
           {SORT_OPTIONS.map(opt => (
             <FilterBtn key={opt.key} active={sort === opt.key} onClick={() => setSort(opt.key)}>
@@ -335,23 +396,41 @@ export default function Gallery() {
           </span>
         </motion.div>
 
-        <motion.div
-          key={`${sort}-${year}`}
-          initial="hidden"
-          animate="visible"
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.04, delayChildren: 0.05 } } }}
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
-        >
-          {filtered.map((album) => (
-            <AlbumCard key={album.url} album={album} onOpenPrivate={setModalAlbum} />
-          ))}
-        </motion.div>
+        {/* Zoznam + preview */}
+        <div className="flex gap-8 lg:gap-12 items-start">
 
-        {filtered.length === 0 && (
-          <p className="font-body text-ink-soft text-sm text-center py-16">
-            Žiadne albumy pre vybraný rok.
-          </p>
-        )}
+          {/* Zoznam */}
+          <motion.div
+            key={`${sort}-${year}`}
+            initial="hidden"
+            animate="visible"
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.025 } } }}
+            className="flex-1 min-w-0 border-t border-ink/8"
+            onMouseLeave={() => setHovered(null)}
+          >
+            {filtered.map(album => (
+              <AlbumRow
+                key={album.url}
+                album={album}
+                isActive={hoveredAlbum?.url === album.url}
+                onMouseEnter={() => setHovered(album)}
+                onMouseLeave={() => {}}
+                onOpenPrivate={setModalAlbum}
+              />
+            ))}
+            {filtered.length === 0 && (
+              <p className="font-body text-ink-soft text-sm text-center py-16">
+                Žiadne albumy pre vybraný rok.
+              </p>
+            )}
+          </motion.div>
+
+          {/* Sticky preview — len desktop */}
+          <div className="hidden lg:block w-[380px] xl:w-[420px] flex-shrink-0">
+            <PreviewPanel album={hoveredAlbum} />
+          </div>
+
+        </div>
       </div>
 
       <AnimatePresence>
