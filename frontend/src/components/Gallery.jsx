@@ -1,102 +1,80 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-// Heslo pre súkromné albumy — zmeň podľa potreby
 const PRIVATE_PASSWORD = 'ponik'
 
-// ── Albumy ────────────────────────────────────────────────────────────────────
-// sortDate: 'YYYY-MM' — podľa tohto sa zoraďuje
-// private: false  → otvori sa priamo
-// private: true   → vyskoci okno s heslom
 const ALBUMS = [
-  {
-    title:    'Tatry Jún 2025',
-    date:     'Jún 2025',
-    sortDate: '2025-06',
-    url:      'https://photos.google.com/share/AF1QipOr3vdKfLpNDi0jEpeDZ943Q6kBPAHYX5xV-Ly9a9TcjD_TsCKUHbB5ZsllyIaPrg?pli=1&key=SVQyRV9yUGVlM2pySUVkQThKMlBGdkF5UXh2ZU53',
-    image:    '/tatry.jpg',
-    private:  false,
-  },
-  {
-    title:    'Hrušov 2019',
-    date:     '15. 6. 2019',
-    sortDate: '2019-06',
-    url:      'https://photos.app.goo.gl/bL2MUzt5WDtR3jeS6',
-    image:    '/titulne/hrusov.webp',
-    private:  true,
-  },
-  {
-    title:    'Bojnice & B. Bystrica 2019',
-    date:     '22. 6. 2019',
-    sortDate: '2019-06',
-    url:      'https://photos.app.goo.gl/5Ls6NSdSsDwbPyut6',
-    image:    '/titulne/bojnice.webp',
-    private:  true,
-  },
-  {
-    title:    'Zobor 2019',
-    date:     '29. 8. 2019',
-    sortDate: '2019-08',
-    url:      'https://photos.app.goo.gl/vfamL2g2pP6zLG2g6',
-    image:    '/titulne/zobor.webp',
-    private:  true,
-  },
-  {
-    title:    'Malajzia 2019',
-    date:     '9. – 21. 9. 2019',
-    sortDate: '2019-09',
-    url:      'https://photos.app.goo.gl/62BeHifS4o5ZVXfj9',
-    image:    '/titulne/malajzia.webp',
-    private:  true,
-  },
-  {
-    title:    'Singapúr 2019',
-    date:     '14. – 18. 9. 2019',
-    sortDate: '2019-09',
-    url:      'https://photos.app.goo.gl/wcdwv75F8fppY6GK8',
-    image:    '/titulne/singapur.webp',
-    private:  true,
-  },
-  {
-    title:    'Panská Javorina 2019',
-    date:     '4. 8. 2019',
-    sortDate: '2019-08',
-    url:      'https://photos.app.goo.gl/FtCAfKdUPee7oTLL8',
-    image:    '/titulne/javorina.webp',
-    private:  false,
-  },
-  {
-    title:    'Sadok, Oponice 2019',
-    date:     '18. 8. 2019',
-    sortDate: '2019-08',
-    url:      'https://photos.app.goo.gl/oq3sJpMGs878wNAG7',
-    image:    '/titulne/sadok.webp',
-    private:  false,
-  },
-  {
-    title:    'Bojna 2019',
-    date:     '13. 10. 2019',
-    sortDate: '2019-10',
-    url:      'https://photos.app.goo.gl/q29fT99meEj7Y77k6',
-    image:    '/titulne/bojna.webp',
-    private:  false,
-  },
-  {
-    title:    'Žarnov 2020',
-    date:     '3. 5. 2020',
-    sortDate: '2020-05',
-    url:      'https://photos.app.goo.gl/bX5soLwARyeNPjry5',
-    image:    '/titulne/zarnov.webp',
-    private:  false,
-  },
-  {
-    title:    'Ružbachy 2020',
-    date:     '19. – 20. 7. 2020',
-    sortDate: '2020-07',
-    url:      'https://photos.app.goo.gl/k1m7PPb1mLkCNkwH9',
-    image:    '/titulne/ruzbachy.webp',
-    private:  false,
-  },
+  // ── Súkromné ──────────────────────────────────────────────────────────────
+  { title: 'Hrušov',                              date: '15. 6. 2019',         sortDate: '2019-06', url: 'https://photos.app.goo.gl/bL2MUzt5WDtR3jeS6', image: '/titulne/hrusov.webp',                  private: true  },
+  { title: 'Brodzany',                            date: '12. 5. 2019',         sortDate: '2019-05', url: 'https://photos.app.goo.gl/zBKSnoMYBCitUoVB8', image: '/titulne/brodzany.JPG',                 private: true  },
+  { title: 'Bojnice & B. Bystrica',               date: '22. 6. 2019',         sortDate: '2019-06', url: 'https://photos.app.goo.gl/5Ls6NSdSsDwbPyut6', image: '/titulne/bojnice.webp',                 private: true  },
+  { title: 'Hrušov (II)',                         date: '15. 6. 2019',         sortDate: '2019-06', url: 'https://photos.app.goo.gl/nMFTiS4dMRLeNCVq8', image: '/titulne/hrusov_2019.jpg',              private: true  },
+  { title: 'Zobor',                               date: '29. 8. 2019',         sortDate: '2019-08', url: 'https://photos.app.goo.gl/vfamL2g2pP6zLG2g6', image: '/titulne/zobor.webp',                   private: true  },
+  { title: 'Malajzia',                            date: '9. – 21. 9. 2019',    sortDate: '2019-09', url: 'https://photos.app.goo.gl/62BeHifS4o5ZVXfj9', image: '/titulne/malajzia.webp',                private: true  },
+  { title: 'Singapúr',                            date: '14. – 18. 9. 2019',   sortDate: '2019-09', url: 'https://photos.app.goo.gl/wcdwv75F8fppY6GK8', image: '/titulne/singapur.webp',                private: true  },
+  { title: 'Oponice hrad',                        date: '20. 10. 2019',        sortDate: '2019-10', url: 'https://photos.app.goo.gl/urWcnCEnmghamtRr7', image: '/titulne/oponice%20hrad.JPG',           private: true  },
+  { title: 'Vapec',                               date: '27. 10. 2019',        sortDate: '2019-10', url: 'https://photos.app.goo.gl/URM7ek6YVyjwgFyY7', image: '/titulne/Vapec.JPG',                    private: true  },
+  { title: 'Trenčín',                             date: '17. 11. 2019',        sortDate: '2019-11', url: 'https://photos.app.goo.gl/fasp7EaN8m6nbomJ6', image: '/titulne/trencin.JPG',                  private: true  },
+  { title: 'Silvester 2019',                      date: '31. 12. 2019',        sortDate: '2019-12', url: 'https://photos.app.goo.gl/Qpcbr8UwosCdZs6d7', image: '/titulne/silveser_2019.JPG',            private: true  },
+  { title: 'Mačacia skala',                       date: '5. 4. 2020',          sortDate: '2020-04', url: 'https://photos.app.goo.gl/1ssBRh7B3T3GQCfx8', image: '/titulne/macacia_skala.JPG',            private: true  },
+  { title: 'Čachtice',                            date: '23. 5. 2020',         sortDate: '2020-05', url: 'https://photos.app.goo.gl/KE3c6QyYEYX9Nvoh7', image: '/titulne/cachtice.JPG',                 private: true  },
+  { title: 'Beckov',                              date: '30. 5. 2020',         sortDate: '2020-05', url: 'https://photos.app.goo.gl/aUS3heaDvm4PCG2b9', image: '/titulne/beckov.JPG',                   private: true  },
+  { title: 'Tematín',                             date: '6. 6. 2020',          sortDate: '2020-06', url: 'https://photos.app.goo.gl/mtfyWktRYxeGKov88', image: '/titulne/tematin.JPG',                  private: true  },
+  { title: 'Uhrovec',                             date: '28. 6. 2020',         sortDate: '2020-06', url: 'https://photos.app.goo.gl/Qv5mBVDM4PSHsxcZ9', image: '/titulne/Uhrovec.JPG',                  private: true  },
+  { title: 'Homola',                              date: '4. 7. 2020',          sortDate: '2020-07', url: 'https://photos.app.goo.gl/fwRmTEbsfVnTreh38', image: '',                                      private: true  },
+  { title: 'Jahodná',                             date: '23. – 26. 7. 2020',   sortDate: '2020-07', url: 'https://photos.app.goo.gl/z2ByGpLF8TEe3p5Q6', image: '',                                      private: true  },
+  { title: 'Lietava, Budatínsky hrad',            date: '1. 8. 2020',          sortDate: '2020-08', url: 'https://photos.app.goo.gl/vMXGgmGfnP9o6P8q6', image: '',                                      private: true  },
+  { title: 'Považský hrad, Mariánska tiesňava',   date: '15. 8. 2020',         sortDate: '2020-08', url: 'https://photos.app.goo.gl/GEGmRT6mit8qfimW9', image: '',                                      private: true  },
+  { title: 'Jánošikove diery, Rozsutec, Kriváň',  date: '29. – 31. 8. 2020',   sortDate: '2020-08', url: 'https://photos.app.goo.gl/tpJKCxNAnLfEzn8g8', image: '/titulne/velky_prielom.JPG',            private: true  },
+  { title: 'Hrdovická skala',                     date: '5. 9. 2020',          sortDate: '2020-09', url: 'https://photos.app.goo.gl/BB41Zmz5dpfbMpHV9', image: '/titulne/Hrdovicka%20skala.JPG',        private: true  },
+  { title: 'Kľak',                                date: '19. 9. 2020',         sortDate: '2020-09', url: 'https://photos.app.goo.gl/XECDRWeYuk4weYew9', image: '/titulne/klak.JPG',                     private: true  },
+  { title: 'Arboretum Mlyňany',                   date: '27. 9. 2020',         sortDate: '2020-09', url: 'https://photos.app.goo.gl/P5cx14pZvPNeDbhk7', image: '/titulne/Arboretum%20Mlynany.JPG',      private: true  },
+  { title: 'Vysoká',                              date: '3. 10. 2020',         sortDate: '2020-10', url: 'https://photos.app.goo.gl/LACq6tzqU43FGpPN6', image: '/titulne/Vysoká.JPG',                   private: true  },
+  { title: 'Topoľčianky',                         date: '5. 11. 2020',         sortDate: '2020-11', url: 'https://photos.app.goo.gl/zLqk3MVJM5HdS61j7', image: '/titulne/topolčianky.JPG',              private: true  },
+  { title: 'Nitra',                               date: '8. 11. 2020',         sortDate: '2020-11', url: 'https://photos.app.goo.gl/BvCGiAGBodd13AZGA', image: '/titulne/Nitra.JPG',                    private: true  },
+  { title: 'Michalov vrch',                       date: '26. 12. 2020',        sortDate: '2020-12', url: 'https://photos.app.goo.gl/bfAaTHw8EBCbwNAi9', image: '/titulne/Michalov%20vrch.JPG',          private: true  },
+  { title: 'Podhradie',                           date: '20. 3. 2021',         sortDate: '2021-03', url: 'https://photos.app.goo.gl/rsFTUGmVcs4M8Dtq9', image: '/titulne/podhradie.JPG',                private: true  },
+  { title: 'Marhat',                              date: '10. 4. 2021',         sortDate: '2021-04', url: 'https://photos.app.goo.gl/QGFg9HoCv2EM7rwu6', image: '/titulne/marhat.JPG',                   private: true  },
+  { title: 'Zibrica',                             date: '24. 4. 2021',         sortDate: '2021-04', url: 'https://photos.app.goo.gl/v2UAuCYUBqbooNQh7', image: '/titulne/zibnica.JPG',                  private: true  },
+  { title: 'Revište',                             date: '20. 6. 2021',         sortDate: '2021-06', url: 'https://photos.app.goo.gl/8rKWRYAw1bte7B7e7', image: '/titulne/rebiste.JPG',                  private: true  },
+  { title: 'Šášovský hrad',                       date: '20. 6. 2021',         sortDate: '2021-06', url: 'https://photos.app.goo.gl/tgG7P5WqQXfh4RxP8', image: '/titulne/sasovsky_hrad.JPG',            private: true  },
+  { title: 'Pustý hrad',                          date: '14. 8. 2021',         sortDate: '2021-08', url: 'https://photos.app.goo.gl/NLFyPAfWBUbqAuHc9', image: '/titulne/pusty_hrad.JPG',               private: true  },
+  { title: 'Rozhľadňa na Krahulci',               date: '14. 8. 2021',         sortDate: '2021-08', url: 'https://photos.app.goo.gl/f91TXNPRmtrDo8h37', image: '/titulne/rozhladna.JPG',                private: true  },
+  { title: 'Úhrad',                               date: '21. 8. 2021',         sortDate: '2021-08', url: 'https://photos.app.goo.gl/fTW1KUZVmR8s6kKw8', image: '/titulne/Uhrad.JPG',                    private: true  },
+  { title: 'Mohyla M.R. Štefánika',               date: '29. 8. 2021',         sortDate: '2021-08', url: 'https://photos.app.goo.gl/a8AXtPcDaa42daRf9', image: '/titulne/mohyla.JPG',                   private: true  },
+  { title: 'Minčol',                              date: '4. 9. 2021',          sortDate: '2021-09', url: 'https://photos.app.goo.gl/bYusRNYy874mqn6u8', image: '/titulne/minčol.JPG',                   private: true  },
+  { title: 'Veľká Rača',                          date: '11. 9. 2021',         sortDate: '2021-09', url: 'https://photos.app.goo.gl/iYzn7oqXHHJH9k9N8', image: '/titulne/velka_raca.JPG',               private: true  },
+  { title: 'Trojmedzie',                          date: '12. 9. 2021',         sortDate: '2021-09', url: 'https://photos.app.goo.gl/ZgULXPBovVo6h2J67', image: '/titulne/Trojmedzie.JPG',               private: true  },
+  { title: 'Veľký Polom',                         date: '13. 9. 2021',         sortDate: '2021-09', url: 'https://photos.app.goo.gl/j97FU1R1qA3HGKHM7', image: '',                                      private: true  },
+  { title: 'Kamenné gule',                        date: '13. 9. 2021',         sortDate: '2021-09', url: 'https://photos.app.goo.gl/cDhRDyYLKBtAEWWT7', image: '/titulne/Kamenné%20gule.JPG',           private: true  },
+  { title: 'Zobor (2021)',                         date: '19. 9. 2021',         sortDate: '2021-09', url: 'https://photos.app.goo.gl/kfz3Y49cX7CdBgcV6', image: '/titulne/zobor_2021.JPG',               private: true  },
+  { title: 'Sitno',                               date: '25. 9. 2021',         sortDate: '2021-09', url: 'https://photos.app.goo.gl/qeCGCFUNLWMdpvZ16', image: '/titulne/sitno.JPG',                    private: true  },
+  { title: 'Skalnatá',                            date: '3. 10. 2021',         sortDate: '2021-10', url: 'https://photos.app.goo.gl/N1RMiNf5MqGS2sxX9', image: '/titulne/skalnata.JPG',                 private: true  },
+  { title: 'Veľký Grič',                          date: '24. 10. 2021',        sortDate: '2021-10', url: 'https://photos.app.goo.gl/i18MeA9FtSJ4CKg59', image: '/titulne/Veľký%20Grič.JPG',             private: true  },
+  { title: 'Zniev',                               date: '23. 1. 2022',         sortDate: '2022-01', url: 'https://photos.app.goo.gl/K1xs83AtaHpqbDjr6', image: '/titulne/zniev.JPG',                    private: true  },
+  { title: 'Špania Dolina',                       date: '13. 3. 2022',         sortDate: '2022-03', url: 'https://photos.app.goo.gl/u9dYaztGeJGVqrrVA', image: '/titulne/Špania%20Dolina.JPG',           private: true  },
+  { title: 'Gubalówka',                           date: '17. 4. 2022',         sortDate: '2022-04', url: 'https://photos.app.goo.gl/SKkaYknf8ZyE1e8i9', image: '/titulne/Gubalowka.jpg',                private: true  },
+  { title: 'Topoľčianky (2022)',                  date: '1. 5. 2022',          sortDate: '2022-05', url: 'https://photos.app.goo.gl/cEpm7vpaRHQUATgk9', image: '/titulne/Topolcianky_2022.jpg',         private: true  },
+  { title: 'Chotenovec',                          date: '5. – 12. 6. 2022',    sortDate: '2022-06', url: 'https://photos.app.goo.gl/GACdiSin3WKXhpNp8', image: '/titulne/Chotenovec%202022.jpg',        private: true  },
+  { title: 'Ostrihom',                            date: '17. 7. 2022',         sortDate: '2022-07', url: 'https://photos.app.goo.gl/og1fYH8hgTCG1LAb8', image: '/titulne/Ostrihom_2022.jpg',            private: true  },
+  { title: 'Chopok, Ďumbier',                     date: '28. 7. 2022',         sortDate: '2022-07', url: 'https://photos.app.goo.gl/rReA81LMRNRAJhef8', image: '/titulne/Chopok.jpg',                   private: true  },
+  { title: 'Alor Setar',                          date: '30. 8. – 11. 9. 2022', sortDate: '2022-08', url: 'https://photos.app.goo.gl/qYCmgu2NbwpBSdFh6', image: '/titulne/Alor_Setar.jpg',              private: true  },
+  { title: 'Penang',                              date: '17. 9. 2022',         sortDate: '2022-09', url: 'https://photos.app.goo.gl/BFciKbRq2QdvbFWc9', image: '/titulne/Penang.jpg',                   private: true  },
+  { title: 'Gunung Keriang',                      date: '24. 9. 2022',         sortDate: '2022-09', url: 'https://photos.app.goo.gl/SaWdxohwRpBdRyXU7', image: '/titulne/Gunung_Keriang.jpg',           private: true  },
+  { title: 'Kľak (2022)',                          date: '6. 11. 2022',         sortDate: '2022-11', url: 'https://photos.app.goo.gl/pq8WrwfG3zRaD1268', image: '/titulne/Klak_2022.jpg',                private: true  },
+  { title: 'Smolenice, Jaskyňa Driny',            date: '28. 5. 2023',         sortDate: '2023-05', url: 'https://photos.app.goo.gl/gZqnCLcvW4ZLcmnk8', image: '/titulne/Smolenice.jpg',                private: true  },
+  { title: 'Súľovské vrchy',                      date: '22. 7. 2023',         sortDate: '2023-07', url: 'https://photos.app.goo.gl/xy1sj5kTPgHHRzm29', image: '/titulne/Súľovské_vrchy.jpg',           private: true  },
+  { title: 'Plzeň',                               date: '19. 8. 2023',         sortDate: '2023-08', url: 'https://photos.app.goo.gl/dRrKA5HVkdkyTqAW8', image: '/titulne/Plzeň.jpg',                    private: true  },
+  { title: 'Liptovský hrad, Veľký Choč',          date: '13. – 16. 9. 2023',   sortDate: '2023-09', url: 'https://photos.app.goo.gl/QVN68jkv7M248JRL9', image: '/titulne/Liptovský_hrad.jpg',           private: true  },
+  { title: 'Neapol',                              date: '17. – 20. 8. 2024',   sortDate: '2024-08', url: 'https://photos.app.goo.gl/JHi4zBqvGiKZ4yNeA', image: '/titulne/Neapol_2024.jpg',              private: true  },
+  { title: 'Tatry Jún 2025',                      date: '13. – 15. 6. 2025',   sortDate: '2025-06', url: 'https://photos.app.goo.gl/7WccHy8hUUqs7pTf7', image: '/tatry.jpg',                            private: true  },
+
+  // ── Verejné ───────────────────────────────────────────────────────────────
+  { title: 'Panská Javorina',                     date: '4. 8. 2019',          sortDate: '2019-08', url: 'https://photos.app.goo.gl/FtCAfKdUPee7oTLL8', image: '/titulne/javorina.webp',                private: false },
+  { title: 'Sadok, Oponice',                      date: '18. 8. 2019',         sortDate: '2019-08', url: 'https://photos.app.goo.gl/oq3sJpMGs878wNAG7', image: '/titulne/sadok.webp',                   private: false },
+  { title: 'Bojna',                               date: '13. 10. 2019',        sortDate: '2019-10', url: 'https://photos.app.goo.gl/q29fT99meEj7Y77k6', image: '/titulne/bojna.webp',                   private: false },
+  { title: 'Žarnov',                              date: '3. 5. 2020',          sortDate: '2020-05', url: 'https://photos.app.goo.gl/bX5soLwARyeNPjry5', image: '/titulne/zarnov.webp',                  private: false },
+  { title: 'Ružbachy',                            date: '19. – 20. 7. 2020',   sortDate: '2020-07', url: 'https://photos.app.goo.gl/k1m7PPb1mLkCNkwH9', image: '/titulne/ruzbachy.webp',                private: false },
 ]
 
 const SORT_OPTIONS = [
@@ -104,7 +82,6 @@ const SORT_OPTIONS = [
   { key: 'oldest', label: 'Najstaršie' },
 ]
 
-// ── Lock ikona ────────────────────────────────────────────────────────────────
 function LockIcon() {
   return (
     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +91,6 @@ function LockIcon() {
   )
 }
 
-// ── Password modal ─────────────────────────────────────────────────────────────
 function PasswordModal({ album, onClose }) {
   const [value, setValue]   = useState('')
   const [wrong, setWrong]   = useState(false)
@@ -205,7 +181,6 @@ function PasswordModal({ album, onClose }) {
   )
 }
 
-// ── Album karta ───────────────────────────────────────────────────────────────
 const cardVariants = {
   hidden:  { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
@@ -228,16 +203,13 @@ function AlbumCard({ album, onOpenPrivate }) {
                  shadow-[2px_2px_0_rgba(31,58,46,0.08)] hover:shadow-[4px_4px_0_rgba(31,58,46,0.15)]
                  transition-shadow duration-300 cursor-pointer"
     >
-      {/* Obrázok */}
       <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
-        style={{ backgroundImage: `url(${album.image})`, backgroundColor: '#2a1f10' }}
+        style={{ backgroundImage: album.image ? `url(${album.image})` : 'none', backgroundColor: '#2a1f10' }}
       />
 
-      {/* Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-dark-wood/85 via-dark-wood/20 to-transparent" />
 
-      {/* Lock badge */}
       {album.private && (
         <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-dark-wood/70 backdrop-blur-sm
                         text-honey text-[10px] font-body tracking-widest uppercase px-2.5 py-1 rounded-full">
@@ -246,13 +218,11 @@ function AlbumCard({ album, onOpenPrivate }) {
         </div>
       )}
 
-      {/* Obsah dole */}
       <div className="absolute bottom-0 left-0 right-0 p-4">
         <p className="font-display text-base text-parchment leading-tight">{album.title}</p>
         <p className="font-body text-[11px] text-parchment/50 mt-0.5">{album.date}</p>
       </div>
 
-      {/* Honey accent linka */}
       <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-honey scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
     </motion.button>
   )
@@ -273,7 +243,6 @@ function FilterBtn({ active, onClick, children }) {
   )
 }
 
-// ── Hlavná sekcia ─────────────────────────────────────────────────────────────
 export default function Gallery() {
   const [modalAlbum, setModalAlbum] = useState(null)
   const [sort, setSort]             = useState('newest')
@@ -315,7 +284,6 @@ export default function Gallery() {
           </motion.p>
         </motion.div>
 
-        {/* Filtre */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -350,16 +318,15 @@ export default function Gallery() {
           </span>
         </motion.div>
 
-        {/* Grid */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.04 } } }}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
         >
           {filtered.map((album) => (
-            <AlbumCard key={album.title} album={album} onOpenPrivate={setModalAlbum} />
+            <AlbumCard key={album.url} album={album} onOpenPrivate={setModalAlbum} />
           ))}
         </motion.div>
 
