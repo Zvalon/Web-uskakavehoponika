@@ -273,7 +273,7 @@ function FilterBtn({ active, onClick, children }) {
   )
 }
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 4 // zmeň na 20 keď bude 100+ albumov
 
 // ── Hlavná sekcia ─────────────────────────────────────────────────────────────
 export default function Gallery() {
