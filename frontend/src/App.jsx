@@ -11,10 +11,12 @@ import Gallery       from './components/Gallery'
 import Contact       from './components/Contact'
 import Footer        from './components/Footer'
 
-const STORAGE_KEY = 'usp-gate-passed'
+// Nastav na true ak chceš zapnúť vstupné heslo
+const GATE_ENABLED = false
+const STORAGE_KEY  = 'usp-gate-passed'
 
 export default function App() {
-  const [passed, setPassed] = useState(() => !!localStorage.getItem(STORAGE_KEY))
+  const [passed, setPassed] = useState(() => !GATE_ENABLED || !!localStorage.getItem(STORAGE_KEY))
 
   return (
     <>

@@ -1,28 +1,36 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Heslo pre súkromné albumy — zmeň podľa potreby
 const PRIVATE_PASSWORD = 'ponik'
 
 // ── Albumy ────────────────────────────────────────────────────────────────────
+// sortDate: 'YYYY-MM' — podľa tohto sa zoraďuje
 // private: false  → otvori sa priamo
 // private: true   → vyskoci okno s heslom
 const ALBUMS = [
   {
-    title:   'Tatry Jún 2025',
-    date:    'Jún 2025',
-    url:     'https://photos.google.com/share/AF1QipOr3vdKfLpNDi0jEpeDZ943Q6kBPAHYX5xV-Ly9a9TcjD_TsCKUHbB5ZsllyIaPrg?pli=1&key=SVQyRV9yUGVlM2pySUVkQThKMlBGdkF5UXh2ZU53',
-    image:   '/tatry.jpg',
-    private: false,
+    title:    'Tatry Jún 2025',
+    date:     'Jún 2025',
+    sortDate: '2025-06',
+    url:      'https://photos.google.com/share/AF1QipOr3vdKfLpNDi0jEpeDZ943Q6kBPAHYX5xV-Ly9a9TcjD_TsCKUHbB5ZsllyIaPrg?pli=1&key=SVQyRV9yUGVlM2pySUVkQThKMlBGdkF5UXh2ZU53',
+    image:    '/tatry.jpg',
+    private:  false,
   },
   // Pridaj ďalšie albumy sem:
   // {
-  //   title:   'Chata August 2025',
-  //   date:    'August 2025',
-  //   url:     'https://photos.google.com/...',
-  //   image:   '/chata-preview.jpg',
-  //   private: true,
+  //   title:    'Chata August 2025',
+  //   date:     'August 2025',
+  //   sortDate: '2025-08',
+  //   url:      'https://photos.google.com/...',
+  //   image:    '/chata-preview.jpg',
+  //   private:  true,
   // },
+]
+
+const SORT_OPTIONS = [
+  { key: 'newest', label: 'Najnovšie' },
+  { key: 'oldest', label: 'Najstaršie' },
 ]
 
 // ── Lock ikona ────────────────────────────────────────────────────────────────
@@ -182,6 +190,14 @@ function AlbumCard({ album, onOpenPrivate }) {
 // ── Hlavná sekcia ─────────────────────────────────────────────────────────────
 export default function Gallery() {
   const [modalAlbum, setModalAlbum] = useState(null)
+  const [sort, setSort] = useState('newest')
+
+  const sorted = useMemo(() => {
+    return [...ALBUMS].sort((a, b) => {
+      const cmp = a.sortDate.localeCompare(b.sortDate)
+      return sort === 'newest' ? -cmp : cmp
+    })
+  }, [sort])
 
   return (
     <section id="galeria" className="py-16 md:py-28 px-4 sm:px-6 bg-parchment border-t border-ink/10">
@@ -192,7 +208,7 @@ export default function Gallery() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12"
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10"
         >
           <div>
             <motion.p variants={cardVariants} className="section-eyebrow">━━ Fotky</motion.p>
@@ -205,6 +221,32 @@ export default function Gallery() {
           </motion.p>
         </motion.div>
 
+        {/* Filter */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex items-center gap-2 mb-8"
+        >
+          <span className="font-body text-[10px] tracking-[0.2em] uppercase text-ink-soft mr-2">Zoradiť:</span>
+          {SORT_OPTIONS.map(opt => (
+            <button
+              key={opt.key}
+              onClick={() => setSort(opt.key)}
+              className={`font-body text-xs tracking-widest uppercase px-4 py-2 rounded-full border transition-all duration-200
+                ${sort === opt.key
+                  ? 'bg-ink text-parchment border-ink'
+                  : 'text-ink-soft border-ink/20 hover:border-ink/50 hover:text-ink'
+                }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+          <span className="font-body text-[10px] text-ink-soft/50 ml-auto">
+            {sorted.length} {sorted.length === 1 ? 'album' : 'albumov'}
+          </span>
+        </motion.div>
+
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -212,8 +254,8 @@ export default function Gallery() {
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
         >
-          {ALBUMS.map((album, i) => (
-            <AlbumCard key={i} album={album} onOpenPrivate={setModalAlbum} />
+          {sorted.map((album, i) => (
+            <AlbumCard key={album.title} album={album} onOpenPrivate={setModalAlbum} />
           ))}
         </motion.div>
       </div>
