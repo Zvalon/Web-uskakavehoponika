@@ -187,17 +187,40 @@ function AlbumCard({ album, onOpenPrivate }) {
   )
 }
 
+function FilterBtn({ active, onClick, children }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`font-body text-xs tracking-widest uppercase px-4 py-2 rounded-full border transition-all duration-200 whitespace-nowrap
+        ${active
+          ? 'bg-ink text-parchment border-ink'
+          : 'text-ink-soft border-ink/20 hover:border-ink/50 hover:text-ink'
+        }`}
+    >
+      {children}
+    </button>
+  )
+}
+
 // ── Hlavná sekcia ─────────────────────────────────────────────────────────────
 export default function Gallery() {
   const [modalAlbum, setModalAlbum] = useState(null)
-  const [sort, setSort] = useState('newest')
+  const [sort, setSort]             = useState('newest')
+  const [year, setYear]             = useState('all')
 
-  const sorted = useMemo(() => {
-    return [...ALBUMS].sort((a, b) => {
-      const cmp = a.sortDate.localeCompare(b.sortDate)
-      return sort === 'newest' ? -cmp : cmp
-    })
-  }, [sort])
+  const years = useMemo(() => {
+    const unique = [...new Set(ALBUMS.map(a => a.sortDate.slice(0, 4)))]
+    return unique.sort((a, b) => b.localeCompare(a))
+  }, [])
+
+  const filtered = useMemo(() => {
+    return [...ALBUMS]
+      .filter(a => year === 'all' || a.sortDate.startsWith(year))
+      .sort((a, b) => {
+        const cmp = a.sortDate.localeCompare(b.sortDate)
+        return sort === 'newest' ? -cmp : cmp
+      })
+  }, [sort, year])
 
   return (
     <section id="galeria" className="py-16 md:py-28 px-4 sm:px-6 bg-parchment border-t border-ink/10">
@@ -221,32 +244,38 @@ export default function Gallery() {
           </motion.p>
         </motion.div>
 
-        {/* Filter */}
+        {/* Filtre */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex items-center gap-2 mb-8"
+          className="space-y-3 mb-8"
         >
-          <span className="font-body text-[10px] tracking-[0.2em] uppercase text-ink-soft mr-2">Zoradiť:</span>
-          {SORT_OPTIONS.map(opt => (
-            <button
-              key={opt.key}
-              onClick={() => setSort(opt.key)}
-              className={`font-body text-xs tracking-widest uppercase px-4 py-2 rounded-full border transition-all duration-200
-                ${sort === opt.key
-                  ? 'bg-ink text-parchment border-ink'
-                  : 'text-ink-soft border-ink/20 hover:border-ink/50 hover:text-ink'
-                }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-          <span className="font-body text-[10px] text-ink-soft/50 ml-auto">
-            {sorted.length} {sorted.length === 1 ? 'album' : 'albumov'}
-          </span>
+          {/* Zoradenie */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-body text-[10px] tracking-[0.2em] uppercase text-ink-soft w-16">Zoradiť</span>
+            {SORT_OPTIONS.map(opt => (
+              <FilterBtn key={opt.key} active={sort === opt.key} onClick={() => setSort(opt.key)}>
+                {opt.label}
+              </FilterBtn>
+            ))}
+          </div>
+
+          {/* Rok */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-body text-[10px] tracking-[0.2em] uppercase text-ink-soft w-16">Rok</span>
+            <FilterBtn active={year === 'all'} onClick={() => setYear('all')}>Všetky</FilterBtn>
+            {years.map(y => (
+              <FilterBtn key={y} active={year === y} onClick={() => setYear(y)}>{y}</FilterBtn>
+            ))}
+          </div>
+
+          <p className="font-body text-[10px] text-ink-soft/50 pt-1">
+            {filtered.length} {filtered.length === 1 ? 'album' : filtered.length < 5 ? 'albumy' : 'albumov'}
+          </p>
         </motion.div>
 
+        {/* Grid */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -254,10 +283,16 @@ export default function Gallery() {
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
         >
-          {sorted.map((album, i) => (
+          {filtered.map((album) => (
             <AlbumCard key={album.title} album={album} onOpenPrivate={setModalAlbum} />
           ))}
         </motion.div>
+
+        {filtered.length === 0 && (
+          <p className="font-body text-ink-soft text-sm text-center py-16">
+            Žiadne albumy pre vybraný rok.
+          </p>
+        )}
       </div>
 
       <AnimatePresence>
