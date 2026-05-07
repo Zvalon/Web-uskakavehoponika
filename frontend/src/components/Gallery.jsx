@@ -313,16 +313,33 @@ export default function Gallery() {
             ))}
           </select>
 
+          <AnimatePresence>
+            {(year !== 'all' || sort !== 'newest') && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.85 }}
+                transition={{ duration: 0.15 }}
+                onClick={() => { setYear('all'); setSort('newest') }}
+                className="font-body text-xs tracking-widest uppercase px-3 py-2 rounded-full
+                           border border-honey/50 text-honey-deep hover:bg-honey/10 hover:border-honey
+                           transition-all duration-200 whitespace-nowrap"
+              >
+                × Zrušiť filter
+              </motion.button>
+            )}
+          </AnimatePresence>
+
           <span className="font-body text-[10px] text-ink-soft/50 ml-auto">
             {filtered.length} {filtered.length === 1 ? 'album' : filtered.length < 5 ? 'albumy' : 'albumov'}
           </span>
         </motion.div>
 
         <motion.div
+          key={`${sort}-${year}`}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.04 } } }}
+          animate="visible"
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.04, delayChildren: 0.05 } } }}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
         >
           {filtered.map((album) => (
