@@ -57,6 +57,46 @@ const ALBUMS = [
     image:    '/titulne/singapur.webp',
     private:  true,
   },
+  {
+    title:    'Panská Javorina 2019',
+    date:     '4. 8. 2019',
+    sortDate: '2019-08',
+    url:      'https://photos.app.goo.gl/FtCAfKdUPee7oTLL8',
+    image:    '/titulne/javorina.webp',
+    private:  false,
+  },
+  {
+    title:    'Sadok, Oponice 2019',
+    date:     '18. 8. 2019',
+    sortDate: '2019-08',
+    url:      'https://photos.app.goo.gl/oq3sJpMGs878wNAG7',
+    image:    '/titulne/sadok.webp',
+    private:  false,
+  },
+  {
+    title:    'Bojna 2019',
+    date:     '13. 10. 2019',
+    sortDate: '2019-10',
+    url:      'https://photos.app.goo.gl/q29fT99meEj7Y77k6',
+    image:    '/titulne/bojna.webp',
+    private:  false,
+  },
+  {
+    title:    'Žarnov 2020',
+    date:     '3. 5. 2020',
+    sortDate: '2020-05',
+    url:      'https://photos.app.goo.gl/bX5soLwARyeNPjry5',
+    image:    '/titulne/zarnov.webp',
+    private:  false,
+  },
+  {
+    title:    'Ružbachy 2020',
+    date:     '19. – 20. 7. 2020',
+    sortDate: '2020-07',
+    url:      'https://photos.app.goo.gl/k1m7PPb1mLkCNkwH9',
+    image:    '/titulne/ruzbachy.webp',
+    private:  false,
+  },
 ]
 
 const SORT_OPTIONS = [
