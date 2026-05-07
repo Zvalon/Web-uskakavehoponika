@@ -1,33 +1,76 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+
+function InstagramIcon() {
+  return (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" strokeWidth="2"/>
+    </svg>
+  )
+}
+
+function FacebookIcon() {
+  return (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+    </svg>
+  )
+}
+
+function OfflineModal({ onClose }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center px-4"
+      style={{ backgroundColor: 'rgba(17,10,4,0.85)', backdropFilter: 'blur(6px)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.92 }}
+        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        onClick={e => e.stopPropagation()}
+        className="bg-parchment rounded-2xl p-8 max-w-sm w-full shadow-2xl border border-ink/10 text-center"
+      >
+        <p className="font-display text-4xl mb-4">🚧</p>
+        <h3 className="font-display text-2xl text-ink mb-2">Formulár mimo prevádzky</h3>
+        <p className="font-body text-ink-soft text-sm leading-relaxed mb-6">
+          Správa odišla do prázdna. Kým to neopravíme, napíš nám rovno na e-mail:
+        </p>
+        <a
+          href="mailto:info@uskakavehoponika.sk"
+          className="font-body text-honey-deep font-medium hover:underline"
+        >
+          info@uskakavehoponika.sk
+        </a>
+        <button
+          onClick={onClose}
+          className="mt-6 w-full btn-primary text-sm py-2.5"
+        >
+          Chápem
+        </button>
+      </motion.div>
+    </motion.div>
+  )
+}
 
 const initialForm = { name: '', email: '', message: '' }
 
-function encode(data) {
-  return Object.keys(data)
-    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k]))
-    .join('&')
-}
-
 export default function Contact() {
-  const [form, setForm]     = useState(initialForm)
-  const [status, setStatus] = useState(null)
+  const [form, setForm]       = useState(initialForm)
+  const [showModal, setModal] = useState(false)
 
   const handleChange = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    setStatus('sending')
-    try {
-      await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encode({ 'form-name': 'contact', ...form }),
-      })
-      setStatus('ok')
-      setForm(initialForm)
-    } catch { setStatus('error') }
+    setModal(true)
   }
 
   const inputClass = `
@@ -56,16 +99,40 @@ export default function Contact() {
               Napíš nám — odpovieme.
             </p>
 
-            <div className="space-y-5 border-t border-ink/10 pt-8">
+            <div className="space-y-6 border-t border-ink/10 pt-8">
               <div>
                 <p className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft mb-1">Email</p>
-                <p className="font-body text-ink">info@uskakavehoponika.sk</p>
+                <a href="mailto:info@uskakavehoponika.sk"
+                   className="font-body text-ink hover:text-honey-deep transition-colors">
+                  info@uskakavehoponika.sk
+                </a>
               </div>
+
               <div>
-                <p className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft mb-1">Sleduj nás</p>
-                <div className="flex gap-5">
-                  <a href="#" className="font-body text-xs tracking-widest uppercase text-ink-soft hover:text-honey-deep transition-colors">Instagram</a>
-                  <a href="#" className="font-body text-xs tracking-widest uppercase text-ink-soft hover:text-honey-deep transition-colors">Facebook</a>
+                <p className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft mb-3">Sleduj nás</p>
+                <div className="flex gap-3">
+                  <a
+                    href="https://www.instagram.com/uskakavehoponika"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-ink/20
+                               font-body text-xs tracking-widest uppercase text-ink-soft
+                               hover:border-ink hover:text-ink transition-all duration-200"
+                  >
+                    <InstagramIcon />
+                    Instagram
+                  </a>
+                  <a
+                    href="https://www.facebook.com/uskakavehoponika"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-ink/20
+                               font-body text-xs tracking-widest uppercase text-ink-soft
+                               hover:border-ink hover:text-ink transition-all duration-200"
+                  >
+                    <FacebookIcon />
+                    Facebook
+                  </a>
                 </div>
               </div>
             </div>
@@ -77,12 +144,9 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
-            name="contact"
-            data-netlify="true"
             onSubmit={handleSubmit}
             className="space-y-4"
           >
-            <input type="hidden" name="form-name" value="contact" />
             <div>
               <label className="block font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft mb-2">Meno</label>
               <input
@@ -95,7 +159,6 @@ export default function Contact() {
                 className={inputClass}
               />
             </div>
-
             <div>
               <label className="block font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft mb-2">E-mail</label>
               <input
@@ -108,7 +171,6 @@ export default function Contact() {
                 className={inputClass}
               />
             </div>
-
             <div>
               <label className="block font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft mb-2">Správa</label>
               <textarea
@@ -121,36 +183,16 @@ export default function Contact() {
                 className={`${inputClass} resize-none`}
               />
             </div>
-
-            <button
-              type="submit"
-              disabled={status === 'sending'}
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-            >
-              {status === 'sending' ? 'Odosielam...' : 'Odoslať správu'}
+            <button type="submit" className="btn-primary w-full text-sm">
+              Odoslať správu
             </button>
-
-            {status === 'ok' && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="font-body text-sm text-ink-soft text-center pt-2"
-              >
-                Správa odoslaná. Ozveme sa čoskoro.
-              </motion.p>
-            )}
-            {status === 'error' && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="font-body text-sm text-red-600 text-center pt-2"
-              >
-                Niečo sa pokazilo. Skús znova.
-              </motion.p>
-            )}
           </motion.form>
         </div>
       </div>
+
+      <AnimatePresence>
+        {showModal && <OfflineModal onClose={() => setModal(false)} />}
+      </AnimatePresence>
     </section>
   )
 }
