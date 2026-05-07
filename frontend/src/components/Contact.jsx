@@ -39,15 +39,6 @@ function OfflineModal({ onClose }) {
       >
         <p className="font-display text-4xl mb-4">🚧</p>
         <h3 className="font-display text-2xl text-ink mb-2">Formulár mimo prevádzky</h3>
-        <p className="font-body text-ink-soft text-sm leading-relaxed mb-6">
-          Správa odišla do prázdna. Kým to neopravíme, napíš nám rovno na e-mail:
-        </p>
-        <a
-          href="mailto:info@uskakavehoponika.sk"
-          className="font-body text-honey-deep font-medium hover:underline"
-        >
-          info@uskakavehoponika.sk
-        </a>
         <button
           onClick={onClose}
           className="mt-6 w-full btn-primary text-sm py-2.5"
@@ -100,14 +91,6 @@ export default function Contact() {
             </p>
 
             <div className="space-y-6 border-t border-ink/10 pt-8">
-              <div>
-                <p className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft mb-1">Email</p>
-                <a href="mailto:info@uskakavehoponika.sk"
-                   className="font-body text-ink hover:text-honey-deep transition-colors">
-                  info@uskakavehoponika.sk
-                </a>
-              </div>
-
               <div>
                 <p className="font-body text-[10px] tracking-[0.25em] uppercase text-ink-soft mb-3">Sleduj nás</p>
                 <div className="flex gap-3">
