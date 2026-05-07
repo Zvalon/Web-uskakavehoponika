@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Heslo pre súkromné albumy — zmeň podľa potreby
@@ -273,14 +273,11 @@ function FilterBtn({ active, onClick, children }) {
   )
 }
 
-const PAGE_SIZE = 4 // zmeň na 20 keď bude 100+ albumov
-
 // ── Hlavná sekcia ─────────────────────────────────────────────────────────────
 export default function Gallery() {
-  const [modalAlbum, setModalAlbum]   = useState(null)
-  const [sort, setSort]               = useState('newest')
-  const [year, setYear]               = useState('all')
-  const [visibleCount, setVisible]    = useState(PAGE_SIZE)
+  const [modalAlbum, setModalAlbum] = useState(null)
+  const [sort, setSort]             = useState('newest')
+  const [year, setYear]             = useState('all')
 
   const years = useMemo(() => {
     const unique = [...new Set(ALBUMS.map(a => a.sortDate.slice(0, 4)))]
@@ -295,13 +292,6 @@ export default function Gallery() {
         return sort === 'newest' ? -cmp : cmp
       })
   }, [sort, year])
-
-  useEffect(() => {
-    setVisible(PAGE_SIZE)
-  }, [sort, year])
-
-  const visible  = filtered.slice(0, visibleCount)
-  const hasMore  = visibleCount < filtered.length
 
   return (
     <section id="galeria" className="py-16 md:py-28 px-4 sm:px-6 bg-parchment border-t border-ink/10">
@@ -368,7 +358,7 @@ export default function Gallery() {
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
         >
-          {visible.map((album) => (
+          {filtered.map((album) => (
             <AlbumCard key={album.title} album={album} onOpenPrivate={setModalAlbum} />
           ))}
         </motion.div>
@@ -377,25 +367,6 @@ export default function Gallery() {
           <p className="font-body text-ink-soft text-sm text-center py-16">
             Žiadne albumy pre vybraný rok.
           </p>
-        )}
-
-        {/* Zobraziť viac */}
-        {hasMore && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center gap-3 mt-10"
-          >
-            <button
-              onClick={() => setVisible(v => v + PAGE_SIZE)}
-              className="btn-primary text-sm"
-            >
-              Zobraziť viac ({filtered.length - visibleCount} zostáva)
-            </button>
-            <p className="font-body text-[10px] text-ink-soft/50">
-              {visibleCount} z {filtered.length} albumov
-            </p>
-          </motion.div>
         )}
       </div>
 
