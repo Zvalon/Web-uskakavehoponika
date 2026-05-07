@@ -11,13 +11,12 @@ const links = [
 
 export default function Footer() {
   return (
-    <footer className="bg-ink text-parchment py-16 px-6 border-t border-parchment/10">
+    <footer className="bg-dark-wood text-parchment py-16 px-6 border-t border-parchment/10">
       <div className="max-w-6xl mx-auto">
 
         {/* Logo centered */}
         <div className="flex flex-col items-center mb-12 pb-12 border-b border-parchment/10">
-          <img src={logoSrc} alt="U skákavého poníka" className="h-24 object-contain opacity-90 mb-5" />
-          <p className="font-display text-2xl text-parchment leading-none mb-6">U skákavého poníka</p>
+          <img src={logoSrc} alt="U skákavého poníka" className="h-24 object-contain opacity-90 mb-6" />
           <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3">
             {links.map(({ href, label }) => (
               <a
