@@ -249,30 +249,34 @@ export default function Gallery() {
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="space-y-3 mb-8"
+          className="flex flex-wrap items-center gap-2 mb-8"
         >
-          {/* Zoradenie */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-body text-[10px] tracking-[0.2em] uppercase text-ink-soft w-16">Zoradiť</span>
-            {SORT_OPTIONS.map(opt => (
-              <FilterBtn key={opt.key} active={sort === opt.key} onClick={() => setSort(opt.key)}>
-                {opt.label}
-              </FilterBtn>
-            ))}
-          </div>
+          {SORT_OPTIONS.map(opt => (
+            <FilterBtn key={opt.key} active={sort === opt.key} onClick={() => setSort(opt.key)}>
+              {opt.label}
+            </FilterBtn>
+          ))}
 
-          {/* Rok */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-body text-[10px] tracking-[0.2em] uppercase text-ink-soft w-16">Rok</span>
-            <FilterBtn active={year === 'all'} onClick={() => setYear('all')}>Všetky</FilterBtn>
+          <div className="w-px h-5 bg-ink/15 mx-1" />
+
+          <select
+            value={year}
+            onChange={e => setYear(e.target.value)}
+            className="font-body text-xs tracking-widest uppercase px-4 py-2 rounded-full border border-ink/20
+                       bg-parchment text-ink-soft hover:border-ink/50 hover:text-ink
+                       transition-all duration-200 outline-none cursor-pointer appearance-none pr-8
+                       bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20stroke%3D%22%236b7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')]
+                       bg-no-repeat bg-[right_0.6rem_center] bg-[length:1rem]"
+          >
+            <option value="all">Všetky roky</option>
             {years.map(y => (
-              <FilterBtn key={y} active={year === y} onClick={() => setYear(y)}>{y}</FilterBtn>
+              <option key={y} value={y}>{y}</option>
             ))}
-          </div>
+          </select>
 
-          <p className="font-body text-[10px] text-ink-soft/50 pt-1">
+          <span className="font-body text-[10px] text-ink-soft/50 ml-auto">
             {filtered.length} {filtered.length === 1 ? 'album' : filtered.length < 5 ? 'albumy' : 'albumov'}
-          </p>
+          </span>
         </motion.div>
 
         {/* Grid */}
