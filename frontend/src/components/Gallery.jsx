@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Heslo pre súkromné albumy — zmeň podľa potreby
@@ -288,13 +288,16 @@ export default function Gallery() {
   }, [])
 
   const filtered = useMemo(() => {
-    setVisible(PAGE_SIZE)
     return [...ALBUMS]
       .filter(a => year === 'all' || a.sortDate.startsWith(year))
       .sort((a, b) => {
         const cmp = a.sortDate.localeCompare(b.sortDate)
         return sort === 'newest' ? -cmp : cmp
       })
+  }, [sort, year])
+
+  useEffect(() => {
+    setVisible(PAGE_SIZE)
   }, [sort, year])
 
   const visible  = filtered.slice(0, visibleCount)
