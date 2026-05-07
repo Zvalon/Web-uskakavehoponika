@@ -44,119 +44,107 @@ const stats = [
   },
 ]
 
-const manifesto = [
-  { title: 'Paragraf I.',   text: '' },
-  { title: 'Paragraf II.',  text: '' },
-  { title: 'Paragraf III.', text: '' },
-  { title: 'Paragraf IV.',  text: '' },
-]
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+}
 
-function Card({ item, index }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 32 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="card-offset p-7"
-    >
-      <p className="font-body text-[10px] tracking-[0.25em] uppercase text-honey-deep mb-3">{item.title}</p>
-      <p className="font-body text-ink-soft leading-relaxed">{item.text}</p>
-    </motion.div>
-  )
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 }
 
 export default function About() {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true })
+  const statsRef = useRef(null)
+  const statsInView = useInView(statsRef, { once: true, margin: '-80px' })
 
   return (
     <section id="o-nas" className="py-16 md:py-28 px-4 sm:px-6 bg-parchment">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12"
+        >
           <div>
-            <p className="section-eyebrow">━━ O združení</p>
-            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-ink leading-none">
+            <motion.p variants={itemVariants} className="section-eyebrow">━━ O združení</motion.p>
+            <motion.h2 variants={itemVariants} className="font-display text-4xl sm:text-5xl md:text-6xl text-ink leading-none">
               Spájame ľudí,<br />
               <em className="text-honey-deep not-italic">jeden skok</em> naraz
-            </h2>
+            </motion.h2>
           </div>
-        </div>
+        </motion.div>
 
         {/* Body text */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          variants={containerVariants}
           className="grid md:grid-cols-2 gap-6 mb-14"
         >
           <div className="space-y-4 font-body text-ink-soft leading-relaxed">
-            <p>
+            <motion.p variants={itemVariants}>
               <strong className="text-ink font-semibold">U skákavého poníka</strong> je občianske združenie,
               ktoré vzniklo spontánne – niekde medzi západom slnka na horskom hrebeni a smiechom pri táborovom
               ohni. Sme partia nadšencov prírody, túr, Alana Murína, dobrej nálady a nefalšovaného gin tonicu
               pod holým nebom. Vychutnávame si život s humorom, nadhľadom a občas aj s cigárou v ruke –
               lebo prečo nie?
-            </p>
-            <p>
+            </motion.p>
+            <motion.p variants={itemVariants}>
               Organizujeme výlety, víkendové akcie, stanovačky a kreatívne šialenstvá, ktoré síce nemajú
               ISO certifikát, ale zato zanechajú úsmev na tvári a iskru v duši. Naše trasy vedú hlbokými
               lesmi, cez lúky plné motýľov, až na kopce, kde nie je signál – a práve tam sa to najlepšie žije.
-            </p>
+            </motion.p>
           </div>
           <div className="space-y-4 font-body text-ink-soft leading-relaxed">
-            <p>
+            <motion.p variants={itemVariants}>
               Veríme, že deti aj dospelí si zaslúžia oddych, voľnosť, trochu blata na topánkach a veľa smiechu.
-            </p>
-            <p>
+            </motion.p>
+            <motion.p variants={itemVariants}>
               Ak hľadáš miesto, kde sa berie život s ľahkosťou, kde sa spieva pri ohni, kde sa turistické paličky
               križia s barovým humorom a kde sa človek cíti prijatý taký, aký je – vitaj u nás.{' '}
               <strong className="text-ink font-semibold">U skákavého poníka nie je len názov. Je to stav mysle.</strong>
-            </p>
+            </motion.p>
           </div>
         </motion.div>
 
         {/* Stats */}
         <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          ref={statsRef}
+          variants={containerVariants}
+          initial="hidden"
+          animate={statsInView ? 'visible' : 'hidden'}
           className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-ink rounded-2xl overflow-hidden mb-14"
         >
           {stats.map((s, i) => (
-            <div
+            <motion.div
               key={i}
-              className={`py-6 sm:py-8 px-3 sm:px-6 text-center flex flex-col items-center gap-2
+              variants={itemVariants}
+              className={`py-6 sm:py-8 px-3 sm:px-6 text-center flex flex-col items-center gap-2 group cursor-default
                 ${i < stats.length - 1 ? 'border-r border-ink' : ''}
                 ${i === 2 ? 'border-t md:border-t-0 border-ink' : ''}
                 ${i === 3 ? 'border-t md:border-t-0 border-ink' : ''}
               `}
             >
-              <span className="text-ink-soft opacity-60">{s.icon}</span>
-              <div className="font-display text-3xl sm:text-4xl text-ink leading-none">{s.n}</div>
+              <span className="text-ink-soft opacity-60 group-hover:opacity-100 group-hover:text-honey-deep transition-all duration-300">{s.icon}</span>
+              <div className="font-display text-3xl sm:text-4xl text-ink leading-none group-hover:text-honey-deep transition-colors duration-300">{s.n}</div>
               <div className="font-body text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-ink-soft">{s.l}</div>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
 
-        {/* Manifesto cards */}
-        <div className="grid md:grid-cols-2 gap-5">
-          {manifesto.map((item, i) => (
-            <Card key={i} item={item} index={i} />
-          ))}
-        </div>
-
         {/* Quote */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-16 text-center border-t border-ink/10 pt-12"
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="text-center border-t border-ink/10 pt-12"
         >
           <blockquote className="font-display italic text-2xl md:text-3xl text-ink max-w-2xl mx-auto leading-snug">
             "Nebuď kokot."

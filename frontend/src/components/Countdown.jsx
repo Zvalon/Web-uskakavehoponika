@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
-const TARGET = new Date('2026-08-01T00:00:00')
+const TARGET = new Date('2026-08-20T00:00:00')
 
 function getRemaining(target) {
   const diff = Math.max(0, target - Date.now())
@@ -67,7 +67,7 @@ export default function Countdown() {
           transition={{ delay: 0.1 }}
           className="font-display text-4xl md:text-6xl text-parchment mb-16 leading-tight"
         >
-          1. augusta <em className="text-honey not-italic">2026</em>
+          20. – 23. augusta <em className="text-honey not-italic">2026</em>
         </motion.h2>
 
         <motion.div

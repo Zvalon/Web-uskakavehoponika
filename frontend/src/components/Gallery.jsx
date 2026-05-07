@@ -1,67 +1,103 @@
 import { motion } from 'framer-motion'
 
-// Albumy — pridaj ďalšie podľa potreby
 const ALBUMS = [
   {
     title: 'Tatry Jún 2025',
     date:  '13. – 15. 6. 2025',
     url:   'https://photos.google.com/share/AF1QipOr3vdKfLpNDi0jEpeDZ943Q6kBPAHYX5xV-Ly9a9TcjD_TsCKUHbB5ZsllyIaPrg?pli=1&key=SVQyRV9yUGVlM2pySUVkQThKMlBGdkF5UXh2ZU53',
+    image: '/tatry.jpg',
+    location: 'Priečne sedlo, Vysoké Tatry',
   },
 ]
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 32 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+}
 
 export default function Gallery() {
   return (
     <section id="galeria" className="py-16 md:py-28 px-4 sm:px-6 bg-parchment border-t border-ink/10">
       <div className="max-w-6xl mx-auto">
 
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12"
+        >
           <div>
-            <p className="section-eyebrow">━━ Fotky</p>
-            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-ink leading-none">
+            <motion.p variants={cardVariants} className="section-eyebrow">━━ Fotky</motion.p>
+            <motion.h2 variants={cardVariants} className="font-display text-4xl sm:text-5xl md:text-6xl text-ink leading-none">
               Naša <em className="text-honey-deep not-italic">galéria</em>
-            </h2>
+            </motion.h2>
           </div>
-          <p className="max-w-xs font-body text-ink-soft text-sm">
+          <motion.p variants={cardVariants} className="max-w-xs font-body text-ink-soft text-sm">
             Fotky z našich spoločných stretnutí, výletov a chát.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Albumy */}
-        <div className="flex flex-wrap gap-4">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          variants={containerVariants}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
+        >
           {ALBUMS.map((album, i) => (
             <motion.a
               key={i}
               href={album.url}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="flex items-center gap-4 border border-ink/20 hover:border-ink
-                         rounded-2xl px-6 py-4 transition-all duration-200 group
-                         shadow-[2px_2px_0_rgba(31,58,46,0.08)]
-                         hover:shadow-[3px_3px_0_#1F3A2E]"
+              variants={cardVariants}
+              className="group relative overflow-hidden rounded-2xl aspect-[4/3] block
+                         shadow-[4px_4px_0_rgba(31,58,46,0.10)]
+                         hover:shadow-[6px_6px_0_rgba(31,58,46,0.18)]
+                         transition-shadow duration-300"
             >
-              <div className="w-10 h-10 rounded-xl bg-parchment-2 border border-ink/15 flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-ink-soft group-hover:text-honey-deep transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              {/* Background image */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
+                style={{ backgroundImage: `url(${album.image})`, backgroundColor: '#2a1f10' }}
+              />
+
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-dark-wood/90 via-dark-wood/30 to-transparent group-hover:opacity-80 transition-opacity duration-400" />
+
+              {/* Top-right external link icon */}
+              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-parchment/10 backdrop-blur-sm
+                              flex items-center justify-center opacity-0 group-hover:opacity-100
+                              transition-all duration-300 translate-y-1 group-hover:translate-y-0">
+                <svg className="w-3.5 h-3.5 text-parchment" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </div>
-              <div>
-                <p className="font-body text-sm font-semibold text-ink group-hover:text-honey-deep transition-colors leading-none mb-1">
+
+              {/* Bottom content */}
+              <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+                <p className="font-body text-[9px] tracking-[0.25em] uppercase text-honey/70 mb-1">
+                  {album.location}
+                </p>
+                <p className="font-display text-xl text-parchment leading-tight mb-1">
                   {album.title}
                 </p>
-                <p className="font-body text-[11px] text-ink-soft">{album.date}</p>
+                <p className="font-body text-[11px] text-parchment/50">{album.date}</p>
               </div>
-              <svg className="w-4 h-4 text-ink/25 group-hover:text-honey-deep transition-colors ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
+
+              {/* Bottom accent line on hover */}
+              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-honey scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
             </motion.a>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>
