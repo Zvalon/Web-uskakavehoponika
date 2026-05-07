@@ -50,7 +50,7 @@ export default function Gate({ onPass }) {
         style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(60,30,5,0.4) 0%, transparent 80%)' }}
       />
 
-      <div className="relative z-10 text-center max-w-md w-full">
+      <div className="relative z-10 text-center max-w-sm w-full">
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -60,11 +60,25 @@ export default function Gate({ onPass }) {
           Občianske združenie · U skákavého poníka
         </motion.p>
 
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-7"
+        >
+          <img
+            src="/zidan.jpg"
+            alt="Zidane"
+            className="w-36 h-36 sm:w-44 sm:h-44 rounded-full object-cover mx-auto
+                       border-2 border-parchment/15 shadow-[0_0_40px_rgba(212,160,60,0.15)]"
+          />
+        </motion.div>
+
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="font-display text-3xl md:text-4xl text-parchment leading-snug mb-10"
+          transition={{ delay: 0.45 }}
+          className="font-display text-2xl sm:text-3xl md:text-4xl text-parchment leading-snug mb-8"
         >
           {QUESTION}
         </motion.h1>
