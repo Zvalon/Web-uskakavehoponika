@@ -17,15 +17,46 @@ const ALBUMS = [
     image:    '/tatry.jpg',
     private:  false,
   },
-  // Pridaj ďalšie albumy sem:
-  // {
-  //   title:    'Chata August 2025',
-  //   date:     'August 2025',
-  //   sortDate: '2025-08',
-  //   url:      'https://photos.google.com/...',
-  //   image:    '/chata-preview.jpg',
-  //   private:  true,
-  // },
+  {
+    title:    'Hrušov 2019',
+    date:     '15. 6. 2019',
+    sortDate: '2019-06',
+    url:      'https://photos.app.goo.gl/bL2MUzt5WDtR3jeS6',
+    image:    '/titulne/hrusov.webp',
+    private:  true,
+  },
+  {
+    title:    'Bojnice & B. Bystrica 2019',
+    date:     '22. 6. 2019',
+    sortDate: '2019-06',
+    url:      'https://photos.app.goo.gl/5Ls6NSdSsDwbPyut6',
+    image:    '/titulne/bojnice.webp',
+    private:  true,
+  },
+  {
+    title:    'Zobor 2019',
+    date:     '29. 8. 2019',
+    sortDate: '2019-08',
+    url:      'https://photos.app.goo.gl/vfamL2g2pP6zLG2g6',
+    image:    '/titulne/zobor.webp',
+    private:  true,
+  },
+  {
+    title:    'Malajzia 2019',
+    date:     '9. – 21. 9. 2019',
+    sortDate: '2019-09',
+    url:      'https://photos.app.goo.gl/62BeHifS4o5ZVXfj9',
+    image:    '/titulne/malajzia.webp',
+    private:  true,
+  },
+  {
+    title:    'Singapúr 2019',
+    date:     '14. – 18. 9. 2019',
+    sortDate: '2019-09',
+    url:      'https://photos.app.goo.gl/wcdwv75F8fppY6GK8',
+    image:    '/titulne/singapur.webp',
+    private:  true,
+  },
 ]
 
 const SORT_OPTIONS = [
