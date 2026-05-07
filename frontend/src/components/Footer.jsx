@@ -1,14 +1,5 @@
 import logoSrc from '../../logo.png'
 
-const links = [
-  { href: '#domov',    label: 'Domov' },
-  { href: '#o-nas',    label: 'O nás' },
-  { href: '#aktivity', label: 'Aktivity' },
-  { href: '#galeria',  label: 'Galéria' },
-  { href: '#podujatia',label: 'Podujatia' },
-  { href: '#kontakt',  label: 'Kontakt' },
-]
-
 export default function Footer() {
   return (
     <footer className="bg-dark-wood text-parchment py-16 px-6 border-t border-parchment/10">
@@ -16,18 +7,7 @@ export default function Footer() {
 
         {/* Logo centered */}
         <div className="flex flex-col items-center mb-12 pb-12 border-b border-parchment/10">
-          <img src={logoSrc} alt="U skákavého poníka" className="h-24 object-contain opacity-90 mb-6" />
-          <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3">
-            {links.map(({ href, label }) => (
-              <a
-                key={href}
-                href={href}
-                className="font-body text-xs tracking-[0.2em] uppercase text-parchment/50 hover:text-parchment transition-colors"
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
+          <img src={logoSrc} alt="U skákavého poníka" className="h-24 object-contain opacity-90" />
         </div>
 
         {/* Bottom row */}
