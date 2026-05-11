@@ -73,8 +73,8 @@ export default function About() {
           <div>
             <motion.p variants={itemVariants} className="section-eyebrow">━━ O združení</motion.p>
             <motion.h2 variants={itemVariants} className="font-display text-4xl sm:text-5xl md:text-6xl text-ink leading-none">
-              Spájame ľudí,<br />
-              <em className="text-honey-deep not-italic">jeden skok</em> naraz
+              Príroda povinná,<br />
+              vážnosť <em className="text-honey-deep not-italic">zakázaná</em>
             </motion.h2>
           </div>
         </motion.div>
