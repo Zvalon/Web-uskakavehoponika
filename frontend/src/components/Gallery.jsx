@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const PRIVATE_PASSWORD = 'ponik'
@@ -96,6 +96,12 @@ function PasswordModal({ album, onClose }) {
   const [value, setValue]   = useState('')
   const [wrong, setWrong]   = useState(false)
   const [shaking, setShake] = useState(false)
+
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onClose])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -195,10 +201,16 @@ function AlbumCard({ album, index, onOpenPrivate }) {
                  shadow-[2px_2px_0_rgba(31,58,46,0.08)] hover:shadow-[4px_4px_0_rgba(31,58,46,0.15)]
                  transition-shadow duration-300 cursor-pointer"
     >
-      <div
-        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
-        style={{ backgroundImage: album.image ? `url(${album.image})` : 'none', backgroundColor: '#2a1f10' }}
-      />
+      <div className="absolute inset-0 bg-[#2a1f10]">
+        {album.image && (
+          <img
+            src={album.image}
+            alt={album.title}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          />
+        )}
+      </div>
       <div className="absolute inset-0 bg-gradient-to-t from-dark-wood/85 via-dark-wood/20 to-transparent" />
       {album.private && (
         <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-dark-wood/70 backdrop-blur-sm

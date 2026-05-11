@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 function InstagramIcon() {
@@ -20,6 +20,12 @@ function FacebookIcon() {
 }
 
 function OfflineModal({ onClose }) {
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onClose])
+
   return (
     <motion.div
       initial={{ opacity: 0 }}

@@ -13,18 +13,37 @@ const linksRight = [
   { href: '#kontakt',   label: 'Kontakt' },
 ]
 const allLinks = [...linksLeft, ...linksRight]
+const sectionIds = ['kontakt', 'podujatia', 'galeria', 'aktivity', 'o-nas', 'domov']
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled]         = useState(false)
+  const [menuOpen, setMenuOpen]         = useState(false)
+  const [activeSection, setActiveSection] = useState('domov')
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', onScroll)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 60)
+      const mid = window.innerHeight / 2
+      for (const id of sectionIds) {
+        const el = document.getElementById(id)
+        if (el && el.getBoundingClientRect().top < mid) {
+          setActiveSection(id)
+          break
+        }
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const linkClass = scrolled ? 'nav-link' : 'nav-link-light'
+  const linkClass = (id) => {
+    const base = scrolled ? 'nav-link' : 'nav-link-light'
+    const isActive = activeSection === id
+    if (!isActive) return base
+    return scrolled
+      ? 'nav-link !text-honey-deep'
+      : 'nav-link-light !text-honey'
+  }
 
   return (
     <motion.nav
@@ -41,12 +60,14 @@ export default function Navbar() {
         {/* Left */}
         <ul className="hidden md:flex gap-7">
           {linksLeft.map(({ href, label }) => (
-            <li key={href}><a href={href} className={linkClass}>{label}</a></li>
+            <li key={href}>
+              <a href={href} className={linkClass(href.slice(1))}>{label}</a>
+            </li>
           ))}
         </ul>
 
         {/* Center logo */}
-        <a href="#" className="flex-shrink-0 md:mx-4">
+        <a href="#domov" className="flex-shrink-0 md:mx-4">
           <img
             src={logoSrc}
             alt="U skákavého poníka"
@@ -59,11 +80,13 @@ export default function Navbar() {
         {/* Right */}
         <ul className="hidden md:flex gap-7">
           {linksRight.map(({ href, label }) => (
-            <li key={href}><a href={href} className={linkClass}>{label}</a></li>
+            <li key={href}>
+              <a href={href} className={linkClass(href.slice(1))}>{label}</a>
+            </li>
           ))}
         </ul>
 
-        {/* Mobile */}
+        {/* Mobile burger */}
         <button
           className={`md:hidden transition-colors ${scrolled ? 'text-ink' : 'text-parchment'}`}
           onClick={() => setMenuOpen(!menuOpen)}
@@ -88,7 +111,8 @@ export default function Navbar() {
             <a
               key={href}
               href={href}
-              className="block text-ink/70 hover:text-honey-deep font-body tracking-widest uppercase text-xs py-3 border-b border-ink/10 last:border-0 transition-colors"
+              className={`block font-body tracking-widest uppercase text-xs py-3 border-b border-ink/10 last:border-0 transition-colors
+                ${activeSection === href.slice(1) ? 'text-honey-deep' : 'text-ink/70 hover:text-honey-deep'}`}
               onClick={() => setMenuOpen(false)}
             >
               {label}

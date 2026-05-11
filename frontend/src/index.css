@@ -43,11 +43,6 @@
   }
 }
 
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
 @keyframes float1 {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
   50%       { transform: translateY(-14px) rotate(5deg); }

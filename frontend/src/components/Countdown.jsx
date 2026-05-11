@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const TARGET = new Date('2026-08-20T00:00:00')
+const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 
 function getRemaining(target) {
   const diff = Math.max(0, target - Date.now())
@@ -27,6 +28,12 @@ function Digit({ value, label }) {
 }
 
 function FullModal({ onClose }) {
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onClose])
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -103,7 +110,7 @@ export default function Countdown() {
         className="relative min-h-[70vh] flex flex-col items-center justify-center py-28"
         style={{
           backgroundImage: 'url(/chata.jpg)',
-          backgroundAttachment: 'fixed',
+          backgroundAttachment: isTouch ? 'scroll' : 'fixed',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundColor: '#1a1008',
